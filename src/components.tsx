@@ -1,15 +1,19 @@
 import conf from "./config.json";
 
 interface AppProps {
-  pageTitle: string;
+  pageTitle?: string;
+  pageIcon?: string;
   children: any;
 }
 
-export const App = ({ children, pageTitle }: AppProps) => {
+export const App = ({ children, pageTitle, pageIcon }: AppProps) => {
   return (
     <html>
       <head>
-        <title>{pageTitle}</title>
+        <meta charset="UTF-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+        <title>{pageTitle || "Anixart-Preview"}</title>
+        {pageIcon ? <link rel="icon" href={pageIcon} /> : ""}
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         <link href="https://unpkg.com/pattern.css" rel="stylesheet"></link>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
@@ -26,6 +30,7 @@ export const App = ({ children, pageTitle }: AppProps) => {
           {`
                 :root {
                     --background-color: #0E131F;
+                    --card-color: #151515;
                     --text-color: #FAFAFA;
                 }
 
@@ -37,6 +42,7 @@ export const App = ({ children, pageTitle }: AppProps) => {
                 }
             `}
         </style>
+        <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
       </head>
       <body
         class={
@@ -60,8 +66,16 @@ interface ButtonProps {
 
 export const Button = ({ text, image, path, bg, fg }: ButtonProps) => {
   return (
-    <a href={path} class="flex gap-4 items-center text-[20px] px-[32px] py-[16px] rounded-[32px] border bg-[var(--bg-color)] text-[var(--fg-color)] border-[var(--fg-color)]/10 hover:border-[var(--fg-color)] transition-[border]" style={`--bg-color: ${bg}; --fg-color: ${fg};`}>
-      {image ? <img src={image} alt="" class="w-[32px] h-[32px] object-contain" /> : ""}
+    <a
+      href={path}
+      class="flex gap-4 items-center text-[20px] px-[32px] py-[16px] rounded-[32px] border bg-[var(--bg-color)] text-[var(--fg-color)] border-[var(--fg-color)]/10 hover:border-[var(--fg-color)] transition-[border]"
+      style={`--bg-color: ${bg}; --fg-color: ${fg};`}
+    >
+      {image ? (
+        <img src={image} alt="" class="w-[32px] h-[32px] object-contain" />
+      ) : (
+        ""
+      )}
       {text}
     </a>
   );
@@ -78,7 +92,7 @@ export const ButtonGroup = ({ path }: ButtonGroupProps) => {
         conf.targets.map((target) => (
           <Button
             text={`Открыть в ${target.name}`}
-            path={path + target.url}
+            path={target.url + path}
             image={target.icon}
             bg={target.buttonBg}
             fg={target.buttonFg}
@@ -104,6 +118,53 @@ export const ButtonGroup = ({ path }: ButtonGroupProps) => {
           </pre>
         </>
       )}
+    </div>
+  );
+};
+
+export const UserCard = ({ user, blog }: { user: any; blog: any }) => {
+  return (
+    <div class="flex flex-col gap-4 p-8 bg-[var(--card-color)] border border-[var(--text-color)]/10 rounded-[32px] relative overflow-hidden">
+      {blog ? (
+        <>
+          <img
+            src={blog.cover}
+            class="w-full object-cover rounded-t-lg aspect-video absolute inset-0"
+          />
+          <div class="w-full bg-gradient-to-t from-[var(--card-color)] to-[var(--card-color)]/0 rounded-t-lg aspect-video absolute inset-0 backdrop-blur-lg"></div>
+        </>
+      ) : (
+        <>
+          <img
+            src={user.avatar}
+            class="w-full object-cover rounded-t-lg aspect-video absolute -top-4 left-0 right-0"
+          />
+          <div class="w-full bg-gradient-to-t from-[var(--card-color)] to-[var(--card-color)]/0 rounded-t-lg aspect-video absolute inset-0 backdrop-blur-lg"></div>
+        </>
+      )}
+      <img
+        src={user.avatar}
+        alt=""
+        class="w-[96px] h-[96px] object-contain rounded-full z-10 border-2 border-[var(--card-color)]/10 object-cover"
+      />
+      <div class="z-10">
+        <h1 class="text-[32px] wrap-anywhere leading-none my-2">
+          {user.login}
+        </h1>
+        <p class="text-[16px] whitespace-pre-wrap">{user.status}</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        {user.roles.map((role: any) => (
+          <div
+            class="border border-[var(--role-color)] rounded-[16px] px-4 py-2 text-[14px] flex gap-2 items-center"
+            style={`--role-color: ${role.color}`}
+            id="role"
+          >
+            <div class="w-[14px] h-[14px] bg-[var(--role-color)] rounded-full"></div>
+            <p>{role.name}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
