@@ -1,0 +1,19 @@
+{
+    "api_base": "https://anixarty.0x174.su/",
+    "targets": [
+        {
+            "name": "AniX",
+            "url": "https://anix.0x174.su/",
+            "icon": "/static/images/anix.png",
+            "buttonBg": "#011826",
+            "buttonFg": "#FAFAFA"
+        },
+        {
+            "name": "Anixart",
+            "url": "anixart://",
+            "icon": "/static/images/anixart.png",
+            "buttonBg": "#151515",
+            "buttonFg": "#FAFAFA"
+        }
+    ]
+}

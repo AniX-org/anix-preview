@@ -1,2 +1,8 @@
-# anix-preview
-Сервис для создания ссылки предпросмотра на аниме/профиль/коллекцию в AniX/Anixart и перехода в нужный клиент. 
+```
+npm install
+npm run dev
+```
+
+```
+open http://localhost:3000
+```
