@@ -11,7 +11,10 @@ export const App = ({ children, pageTitle, pageIcon }: AppProps) => {
     <html>
       <head>
         <meta charset="UTF-8"></meta>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+        ></meta>
         <title>{pageTitle || "Anixart-Preview"}</title>
         {pageIcon ? <link rel="icon" href={pageIcon} /> : ""}
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -82,22 +85,37 @@ export const Button = ({ text, image, path, bg, fg }: ButtonProps) => {
 };
 
 interface ButtonGroupProps {
-  path: string;
+  type?: "profile";
+  id?: string;
 }
 
-export const ButtonGroup = ({ path }: ButtonGroupProps) => {
+export const ButtonGroup = ({ type, id }: ButtonGroupProps) => {
   return (
     <div class="flex flex-col gap-4">
       {conf.targets.length > 0 ? (
-        conf.targets.map((target) => (
-          <Button
-            text={`Открыть в ${target.name}`}
-            path={target.url + path}
-            image={target.icon}
-            bg={target.buttonBg}
-            fg={target.buttonFg}
-          />
-        ))
+        conf.targets.map((target) => {
+          let btnUrl = null;
+
+          if (!type || !id) {
+            btnUrl = "";
+          } else {
+            if (target.url.startsWith("http")) {
+              btnUrl = `${type}/${id}`;
+            } else {
+              btnUrl = `${type}?id=${id}`;
+            }
+          }
+
+          return (
+            <Button
+              text={`Открыть в ${target.name}`}
+              path={target.url + btnUrl}
+              image={target.icon}
+              bg={target.buttonBg}
+              fg={target.buttonFg}
+            />
+          );
+        })
       ) : (
         <>
           <p>Нет валидных ссылок, добавьте их в конфиг</p>

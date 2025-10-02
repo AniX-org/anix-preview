@@ -6,7 +6,7 @@ import { tryCatchAPI } from "./tryCatch";
 function renderIndexPage(c: any) {
   return c.render(
     <App>
-      <ButtonGroup path=""></ButtonGroup>
+      <ButtonGroup></ButtonGroup>
     </App>
   );
 }
@@ -21,6 +21,7 @@ app.get(`/profile/:id`, async (c) => {
     return renderIndexPage(c);
   }
 
+  // sourcery skip: combine-object-destructuring
   const { data: profileData, error: profileError } = await tryCatchAPI<any>(
     fetch(`${API_BASE}/profile/${c.req.param("id")}`, {
       method: "GET",
@@ -45,8 +46,11 @@ app.get(`/profile/:id`, async (c) => {
       pageIcon={profileData.profile.avatar}
     >
       <div class="flex flex-col gap-8">
-        <UserCard user={profileData.profile} blog={profileBlog ? profileBlog.channel : null} />
-        <ButtonGroup path={`profile?id=${c.req.param("id")}`}></ButtonGroup>
+        <UserCard
+          user={profileData.profile}
+          blog={profileBlog ? profileBlog.channel : null}
+        />
+        <ButtonGroup type={`profile`} id={c.req.param("id")}></ButtonGroup>
       </div>
     </App>
   );
