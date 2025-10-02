@@ -46,7 +46,7 @@ app.get(`/profile/:id`, async (c) => {
     >
       <div class="flex flex-col gap-8">
         <UserCard user={profileData.profile} blog={profileBlog ? profileBlog.channel : null} />
-        <ButtonGroup path={`profile/${c.req.param("id")}`}></ButtonGroup>
+        <ButtonGroup path={`profile?id=${c.req.param("id")}`}></ButtonGroup>
       </div>
     </App>
   );
