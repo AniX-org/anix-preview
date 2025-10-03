@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { App, ButtonGroup, UserCard } from "./components";
+import { App, ButtonGroup, ReleaseCard, UserCard } from "./components";
 import { ANIXART_HEADERS, getApiBase } from "./config";
 import { tryCatchAPI } from "./tryCatch";
 import { generateProfileOpenGraphImage } from "./utils.tsx";
@@ -91,6 +91,33 @@ app.get(`/profile/:id/opengraph`, async (c) => {
   return await generateProfileOpenGraphImage(
     profileData.profile,
     profileBlog ? profileBlog.channel : null
+  );
+});
+
+app.get(`/release/:id`, async (c) => {
+  if (!c.req.param("id")) {
+    return renderIndexPage(c);
+  }
+
+  // sourcery skip: combine-object-destructuring
+  const { data, error } = await tryCatchAPI<any>(
+    fetch(`${getApiBase(c)}/release/${c.req.param("id")}`, {
+      method: "GET",
+      headers: ANIXART_HEADERS,
+    })
+  );
+
+  if (error) {
+    return renderIndexPage(c);
+  }
+
+  return c.render(
+    <App>
+      <div class="flex flex-col gap-8">
+        <ReleaseCard release={data.release} />
+        <ButtonGroup type={`release`} id={c.req.param("id")}></ButtonGroup>
+      </div>
+    </App>
   );
 });
 

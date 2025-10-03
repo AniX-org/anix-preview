@@ -1,4 +1,5 @@
 import conf from "./config.json";
+import { minutesToTime } from "./utils";
 
 interface AppProps {
   pageTitle?: string;
@@ -118,7 +119,7 @@ export const Button = ({ text, image, path, bg, fg }: ButtonProps) => {
 };
 
 interface ButtonGroupProps {
-  type?: "profile";
+  type?: "profile" | "release";
   id?: string;
 }
 
@@ -201,7 +202,14 @@ export const UserCard = ({ user, blog }: { user: any; blog: any }) => {
       <div class="z-10">
         <div class="text-[32px] wrap-anywhere leading-none my-2 flex items-center gap-1">
           <span>{user.login}</span>
-          {user.is_verified && <span><img src="/static/images/ic-verified.svg" style={{ width: 32, height: 32, marginLeft: 8 }}></img></span>}
+          {user.is_verified && (
+            <span>
+              <img
+                src="/static/images/ic-verified.svg"
+                style={{ width: 32, height: 32, marginLeft: 8 }}
+              ></img>
+            </span>
+          )}
         </div>
         <p class="text-[16px] whitespace-pre-wrap">{user.status}</p>
       </div>
@@ -216,6 +224,154 @@ export const UserCard = ({ user, blog }: { user: any; blog: any }) => {
             <p>{role.name}</p>
           </div>
         ))}
+      </div>
+    </div>
+  );
+};
+
+const YearSeason = [null, "Зима", "Весна", "Лето", "Осень"];
+const ageRating = [null, "0+", "6+", "12+", "16+", "18+"];
+const weekDay = [
+  null,
+  "каждый понедельник",
+  "каждый вторник",
+  "каждую среду",
+  "каждый четверг",
+  "каждую пятницу",
+  "каждую субботу",
+  "каждое воскресенье",
+];
+
+export const ReleaseCard = ({ release }: { release: any }) => {
+  return (
+    <div class="flex flex-col gap-4 p-8 bg-[var(--card-color)] border border-[var(--text-color)]/10 rounded-[32px] relative overflow-hidden">
+      <img
+        src={release.image}
+        alt=""
+        class="w-[256px] h-[320px] rounded-[32px] z-10 border-2 border-[var(--card-color)]/10 object-cover"
+      />
+      <div class="flex flex-col gap-2">
+        <h1 class="text-[32px] wrap-anywhere leading-none my-2">
+          {release.title_ru}
+        </h1>
+        <div class="text-[16px] wrap-anywhere leading-none my-2 text-[var(--text-color)]/50 -mt-1 flex flex-wrap gap-2 items-center">
+          <span>{release.title_original}</span>
+          {/* @ts-ignore */}
+          {release.age_rating && ageRating[release.age_rating] && (
+            <span class="bg-white text-black px-1 py-0.5 rounded-[4px] text-xs">
+              {/* @ts-ignore */}
+              {ageRating[release.age_rating]}
+            </span>
+          )}
+        </div>
+        <p
+          class="line-clamp-4 transition-[max-height] max-h-[var(--max-h)]"
+          id="release_desc"
+          style={`--max-h: 100px;`}
+        >
+          {release.description}
+        </p>
+        <button
+          id="release_expand"
+          class="text-sm px-4 py-2 rounded-[32px] border border-[var(--text-color)]/10 hover:border-[var(--text-color)] transition-[border]"
+        >
+          Подробнее...
+        </button>
+        <script src="/static/js/release.js"></script>
+      </div>
+      <div class="flex flex-col gap-2">
+        {release.country ? (
+          <div class="flex gap-2 items-center">
+            {release.country == "Япония" ? (
+              <img
+                src="/static/icons/twemoji_flag-japan.svg"
+                class="w-[18px] h-[18px]"
+              />
+            ) : release.country == "Китай" ? (
+              <img
+                src="/static/icons/twemoji_flag-china.svg"
+                class="w-[18px] h-[18px]"
+              />
+            ) : (
+              <img
+                src="/static/icons/twemoji_flag-united-nations.svg"
+                class="w-[18px] h-[18px]"
+              />
+            )}
+            <span>
+              {release.country}
+              {release.season ? ", " : ""}
+              {release.season && YearSeason[release.season]
+                ? YearSeason[release.season]
+                : ""}
+              {release.year ? " " : ""}
+              {release.year ? `${release.year} г.` : ""}
+            </span>
+          </div>
+        ) : (
+          ""
+        )}
+        <div class="flex gap-2 items-center">
+          <img
+            src="/static/icons/mingcute_play-circle-line.svg"
+            class="w-[18px] h-[18px]"
+          />
+          <span>
+            {release.episodes_released ? release.episodes_released : "?"}
+            {"/"}
+            {release.episodes_total
+              ? release.episodes_total + " эп. "
+              : "? эп. "}
+            {release.duration != 0 && `По ${minutesToTime(release.duration)}`}
+          </span>
+        </div>
+        <div class="flex gap-2 items-center leading-none">
+          <img
+            src="/static/icons/mingcute_calendar-2-line.svg"
+            class="w-[18px] h-[18px]"
+          />
+          <span>
+            {release.category ? release.category.name : "?"}
+            {", "}
+            {release.status ? release.status.name : "Анонс"}
+            {release.broadcast != 0 ? ` ${weekDay[release.broadcast]}` : ""}
+          </span>
+        </div>
+        <div class="flex gap-2 items-center">
+          <img
+            src="/static/icons/mingcute_user-3-line.svg"
+            class="w-[18px] h-[18px]"
+          />
+          <div class="flex gap-1 flex-col flex-wrap text-balance leading-none">
+            {release.studio && (
+              <div>
+                {"Студия: "}
+                {release.studio}
+              </div>
+            )}
+            {release.author && (
+              <p>
+                {"Автор: "}
+                <span>{release.author}</span>
+              </p>
+            )}
+            {release.director && (
+              <p>
+                {"Режиссёр: "}
+                <span>{release.director}</span>
+              </p>
+            )}
+          </div>
+        </div>
+        {release.genres && (
+          <div class="flex gap-2 items-center flex-wrap leading-none">
+            <img
+              src="/static/icons/mingcute_tag-2-line.svg"
+              class="w-[18px] h-[18px]"
+            />
+            <span>{release.genres}</span>
+          </div>
+        )}
       </div>
     </div>
   );

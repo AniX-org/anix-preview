@@ -189,3 +189,56 @@ export const generateProfileOpenGraphImage = async (user: any, blog: any) => {
     },
   });
 };
+
+export function numberDeclension(
+  number: number,
+  one: string,
+  two: string,
+  five: string
+) {
+  if (number > 10 && [11, 12, 13, 14].includes(number % 100)) return five;
+  let last_num = number % 10;
+  if (last_num == 1) return one;
+  if ([2, 3, 4].includes(last_num)) return two;
+  if ([5, 6, 7, 8, 9, 0].includes(last_num)) return five;
+}
+
+export function minutesToTime(min: number) {
+  const seconds = min * 60;
+  const epoch = new Date(0);
+  const date = new Date(seconds * 1000);
+
+  const diffInMinutes =
+    new Date(date.getTime() - epoch.getTime()).getTime() / 1000 / 60;
+
+  let days = Math.floor(diffInMinutes / 1440);
+  if (days < 0) days = 0;
+  const daysToMinutes = days * 1440;
+
+  let hours = Math.floor((diffInMinutes - daysToMinutes) / 60);
+  if (hours < 0) hours = 0;
+  const hoursToMinutes = hours * 60;
+
+  let minutes = diffInMinutes - daysToMinutes - hoursToMinutes;
+  if (minutes < 0) minutes = 0;
+
+  const dayDisplay =
+    days > 0 ? `${days} ${numberDeclension(days, "день", "дня", "дней")}` : "";
+  const hourDisplay =
+    hours > 0
+      ? `${hours} ${numberDeclension(hours, "час", "часа", "часов")}`
+      : "";
+  const minuteDisplay =
+    minutes > 0
+      ? `${minutes} ${numberDeclension(minutes, "минута", "минуты", "минут")}`
+      : "";
+
+  if (days > 0 && hours > 0 && minutes > 0)
+    return `${dayDisplay}, ${hourDisplay}, ${minuteDisplay}`;
+  if (days > 0 && hours > 0) return `${dayDisplay}, ${hourDisplay}`;
+  if (days > 0 && minutes > 0) return `${dayDisplay}, ${minuteDisplay}`;
+  if (hours > 0 && minutes > 0) return `${hourDisplay}, ${minuteDisplay}`;
+  if (days > 0) return dayDisplay;
+  if (hours > 0) return hourDisplay;
+  if (minutes > 0) return minuteDisplay;
+}
