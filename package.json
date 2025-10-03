@@ -2,19 +2,22 @@
   "name": "anix-preview",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch node.ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
+    "node-dev": "tsx watch node.ts",
+    "node-run": "npx tsx node.ts",
+    "cf-dev": "wrangler dev",
+    "cf-deploy": "wrangler deploy --minify"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.5",
+    "@resvg/resvg-js": "^2.6.2",
+    "@resvg/resvg-wasm": "^2.6.2",
     "hono": "^4.9.9",
-    "satori": "^0.18.3",
-    "sharp": "^0.34.4"
+    "satori": "^0.18.3"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
     "tsx": "^4.7.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "wrangler": "^4.41.0"
   }
 }

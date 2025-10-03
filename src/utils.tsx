@@ -1,5 +1,6 @@
 import satori from "satori";
-import sharp from "sharp";
+import { Resvg, initWasm } from "@resvg/resvg-wasm";
+import { getRuntimeKey } from "hono/adapter";
 
 export async function fetchFont(url: URL | string) {
   const response = await fetch(url);
@@ -9,7 +10,37 @@ export async function fetchFont(url: URL | string) {
   return response.arrayBuffer();
 }
 
+let initialized = false;
+
+export async function initResvgWasm() {
+  try {
+    const runtime = getRuntimeKey();
+    if (initialized) return;
+
+    if (runtime == "node") {
+      console.log("Init Resvg WASM for Node");
+      const wasmResponse = await fetch(
+        "https://unpkg.com/@resvg/resvg-wasm@2.6.2/index_bg.wasm"
+      );
+      const wasmArrayBuffer = await wasmResponse.arrayBuffer();
+      await initWasm(wasmArrayBuffer);
+      initialized = true;
+      console.log("Resvg wasm initialized");
+      return;
+    }
+
+    console.log("Init Resvg WASM for Edge");
+    const rvg_wasm_wbg = await import("@resvg/resvg-wasm/index_bg.wasm");
+    await initWasm(rvg_wasm_wbg.default);
+    initialized = true;
+    console.log("Resvg wasm initialized");
+  } catch (error) {
+    console.error("Resvg wasm not initialized", error);
+  }
+}
+
 export const createOpenGraphImage = async (user: any, blog: any) => {
+  await initResvgWasm();
   let svg: string | undefined;
   svg = await satori(
     <div
@@ -100,23 +131,27 @@ export const createOpenGraphImage = async (user: any, blog: any) => {
         <h1
           style={{
             fontSize: 64,
-            overflowWrap: "anywhere"
+            overflowWrap: "anywhere",
           }}
         >
           {user.login}
         </h1>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
           {user.roles.map((role: any) => {
-            return <p style={{
-              fontSize: 24,
-              leading: 1,
-              border: `#${role.color} 2px solid`,
-              borderRadius: 32,
-              padding: "8px 16px",
-              margin: 0
-            }}>
-              {role.name}
-            </p>
+            return (
+              <p
+                style={{
+                  fontSize: 24,
+                  leading: 1,
+                  border: `#${role.color} 2px solid`,
+                  borderRadius: 32,
+                  padding: "8px 16px",
+                  margin: 0,
+                }}
+              >
+                {role.name}
+              </p>
+            );
           })}
         </div>
       </div>
@@ -136,12 +171,13 @@ export const createOpenGraphImage = async (user: any, blog: any) => {
       ],
     }
   );
-  const webp = await sharp(Buffer.from(svg)).webp({ quality: 90 }).toBuffer();
 
-  // @ts-ignore
-  return new Response(webp, {
+  let png;
+  png = new Resvg(svg).render().asPng();
+
+  return new Response(png, {
     headers: {
-      "Content-Type": "image/webp",
+      "Content-Type": "image/png",
     },
   });
 };

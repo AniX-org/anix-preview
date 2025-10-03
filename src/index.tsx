@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { App, ButtonGroup, UserCard } from "./components";
-import { ANIXART_HEADERS, API_BASE } from "./config";
+import { ANIXART_HEADERS, getApiBase } from "./config";
 import { tryCatchAPI } from "./tryCatch";
 import { createOpenGraphImage } from "./utils.tsx";
 
@@ -24,14 +24,14 @@ app.get(`/profile/:id`, async (c) => {
 
   // sourcery skip: combine-object-destructuring
   const { data: profileData, error: profileError } = await tryCatchAPI<any>(
-    fetch(`${API_BASE}/profile/${c.req.param("id")}`, {
+    fetch(`${getApiBase(c)}/profile/${c.req.param("id")}`, {
       method: "GET",
       headers: ANIXART_HEADERS,
     })
   );
 
   const { data: profileBlog } = await tryCatchAPI<any>(
-    fetch(`${API_BASE}/channel/blog/${c.req.param("id")}`, {
+    fetch(`${getApiBase(c)}/channel/blog/${c.req.param("id")}`, {
       method: "GET",
       headers: ANIXART_HEADERS,
     })
@@ -71,14 +71,14 @@ app.get(`/profile/:id/opengraph`, async (c) => {
 
   // sourcery skip: combine-object-destructuring
   const { data: profileData, error: profileError } = await tryCatchAPI<any>(
-    fetch(`${API_BASE}/profile/${c.req.param("id")}`, {
+    fetch(`${getApiBase(c)}/profile/${c.req.param("id")}`, {
       method: "GET",
       headers: ANIXART_HEADERS,
     })
   );
 
   const { data: profileBlog } = await tryCatchAPI<any>(
-    fetch(`${API_BASE}/channel/blog/${c.req.param("id")}`, {
+    fetch(`${getApiBase(c)}/channel/blog/${c.req.param("id")}`, {
       method: "GET",
       headers: ANIXART_HEADERS,
     })

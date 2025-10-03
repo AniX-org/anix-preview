@@ -9,6 +9,7 @@
     "strict": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
+    "lib": ["ESNext"],
     "types": [
       "node"
     ],
@@ -20,6 +21,6 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json", "src/**/*.jsonc", "deno.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json", "deno.ts"],
   "exclude": ["node_modules"]
 }

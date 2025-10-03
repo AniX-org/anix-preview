@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "anix-preview",
+  "main": "worker.ts",
+  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_date": "2025-09-05",
+  "assets": { "directory": "./public" },
+  "vars": {
+    "API_BASE": "https://anix-api.wah.su"
+  }
+}

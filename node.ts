@@ -2,7 +2,7 @@ import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import app from "./src/index.tsx"
 
-app.use(`/static/*`, serveStatic({ root: './' }))
+app.use(`/static/*`, serveStatic({ root: './public' }))
 serve({
   fetch: app.fetch,
   port: process.env.PORT ? Number(process.env.PORT) : 3000
