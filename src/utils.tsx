@@ -258,32 +258,19 @@ export const generateReleaseOpenGraphImage = async (
                 fontSize: 24,
               }}
             >
-              <img
-                src={`${origin}/static/icons/mingcute_play-circle-line.svg`}
-                style={{ width: 48, height: 48 }}
-              />
               {release.episodes_released ? release.episodes_released : "?"}
               {"/"}
               {release.episodes_total
                 ? release.episodes_total + " эп. "
                 : "? эп. "}
             </span>
-            {release.country == "Япония" ? (
-              <img
-                src={`${origin}/static/icons/twemoji_flag-japan.svg`}
-                style={{ width: 48, height: 48 }}
-              />
-            ) : release.country == "Китай" ? (
-              <img
-                src={`${origin}/static/icons/twemoji_flag-china.svg`}
-                style={{ width: 48, height: 48 }}
-              />
-            ) : (
-              <img
-                src={`${origin}/static/icons/twemoji_flag-united-nations.svg`}
-                style={{ width: 48, height: 48 }}
-              />
-            )}
+            <span
+              style={{
+                fontSize: 24,
+              }}
+            >
+              {release.country ? release.country : ""}
+            </span>
           </div>
         </div>
         <h1
