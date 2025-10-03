@@ -2,7 +2,10 @@ import { Hono } from "hono";
 import { App, ButtonGroup, ReleaseCard, UserCard } from "./components";
 import { ANIXART_HEADERS, getApiBase } from "./config";
 import { tryCatchAPI } from "./tryCatch";
-import { generateProfileOpenGraphImage } from "./utils.tsx";
+import {
+  generateProfileOpenGraphImage,
+  generateReleaseOpenGraphImage,
+} from "./utils.tsx";
 
 function renderIndexPage(c: any) {
   return c.render(
@@ -112,13 +115,45 @@ app.get(`/release/:id`, async (c) => {
   }
 
   return c.render(
-    <App>
+    <App
+      pageTitle={`${data.release.title_ru || data.release.title_original} @ Anixart`}
+      pageIcon={data.release.image}
+      openGraph={{
+        url: c.req.url,
+        description: data.release.description,
+        image: `${c.req.url}/opengraph`,
+        imageWidth: 512,
+        imageHeight: 640,
+      }}
+    >
       <div class="flex flex-col gap-8">
         <ReleaseCard release={data.release} />
         <ButtonGroup type={`release`} id={c.req.param("id")}></ButtonGroup>
       </div>
     </App>
   );
+});
+
+app.get(`/release/:id/opengraph`, async (c) => {
+  if (!c.req.param("id")) {
+    return c.text("нет ID", 400);
+  }
+
+  const host = new URL(c.req.url).origin;
+
+  // sourcery skip: combine-object-destructuring
+  const { data, error } = await tryCatchAPI<any>(
+    fetch(`${getApiBase(c)}/release/${c.req.param("id")}`, {
+      method: "GET",
+      headers: ANIXART_HEADERS,
+    })
+  );
+
+  if (error) {
+    return c.text(error.message, 500);
+  }
+
+  return await generateReleaseOpenGraphImage(data.release, host);
 });
 
 export default app;

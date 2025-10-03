@@ -190,6 +190,138 @@ export const generateProfileOpenGraphImage = async (user: any, blog: any) => {
   });
 };
 
+const ageRating = [null, "0+", "6+", "12+", "16+", "18+"];
+export const generateReleaseOpenGraphImage = async (
+  release: any,
+  origin: string
+) => {
+  await initResvgWasm();
+  let svg: string | undefined;
+  svg = await satori(
+    <div
+      style={{
+        width: 512,
+        height: 640,
+        FontFace: "Geist",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#0E131F",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          width: 512,
+          height: 640,
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "#151515",
+          color: "#FAFAFA",
+          overflow: "hidden",
+          padding: 32,
+          position: "relative",
+        }}
+      >
+        <div style={{ display: "flex", gap: 16 }}>
+          <img
+            src={release.image}
+            style={{
+              width: 256,
+              height: 320,
+              objectFit: "cover",
+              borderRadius: 32,
+              border: "#151515A0 2px solid",
+              borderOpacity: 0.2,
+            }}
+          ></img>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {release.age_rating && ageRating[release.age_rating] && (
+              <span
+                style={{
+                  color: "black",
+                  background: "white",
+                  padding: "4px 8px",
+                  borderRadius: 8,
+                  fontSize: 24,
+                }}
+              >
+                {/* @ts-ignore */}
+                {ageRating[release.age_rating]}
+              </span>
+            )}
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                fontSize: 24,
+              }}
+            >
+              <img
+                src={`${origin}/static/icons/mingcute_play-circle-line.svg`}
+                style={{ width: 48, height: 48 }}
+              />
+              {release.episodes_released ? release.episodes_released : "?"}
+              {"/"}
+              {release.episodes_total
+                ? release.episodes_total + " эп. "
+                : "? эп. "}
+            </span>
+            {release.country == "Япония" ? (
+              <img
+                src={`${origin}/static/icons/twemoji_flag-japan.svg`}
+                style={{ width: 48, height: 48 }}
+              />
+            ) : release.country == "Китай" ? (
+              <img
+                src={`${origin}/static/icons/twemoji_flag-china.svg`}
+                style={{ width: 48, height: 48 }}
+              />
+            ) : (
+              <img
+                src={`${origin}/static/icons/twemoji_flag-united-nations.svg`}
+                style={{ width: 48, height: 48 }}
+              />
+            )}
+          </div>
+        </div>
+        <h1
+          style={{
+            fontSize: 48,
+            overflowWrap: "anywhere",
+          }}
+        >
+          {release.title_ru}
+        </h1>
+      </div>
+    </div>,
+    {
+      width: 512,
+      height: 640,
+      fonts: [
+        {
+          name: "Geist",
+          data: await fetchFont(
+            "https://github.com/vercel/geist-font/raw/refs/heads/main/fonts/Geist/ttf/Geist-Regular.ttf"
+          ),
+          weight: 400,
+          style: "normal",
+        },
+      ],
+    }
+  );
+
+  let png;
+  png = new Resvg(svg).render().asPng();
+
+  return new Response(png, {
+    headers: {
+      "Content-Type": "image/png",
+    },
+  });
+};
+
 export function numberDeclension(
   number: number,
   one: string,
