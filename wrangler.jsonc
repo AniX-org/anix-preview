@@ -6,6 +6,6 @@
   "compatibility_date": "2025-09-05",
   "assets": { "directory": "./public" },
   "vars": {
-    "API_BASE": "https://anix-api.wah.su"
+    "API_BASE": ""
   }
 }
