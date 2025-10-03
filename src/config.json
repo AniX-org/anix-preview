@@ -1,13 +1,6 @@
 {
     "targets": [
         {
-            "name": "AniX",
-            "url": "https://anix.0x174.su/",
-            "icon": "/static/images/anix.png",
-            "buttonBg": "#011826",
-            "buttonFg": "#FAFAFA"
-        },
-        {
             "name": "Anixart",
             "url": "anixart://",
             "icon": "/static/images/anixart.png",
