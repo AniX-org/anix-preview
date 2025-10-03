@@ -1,0 +1,31 @@
+name: Build and Publish 'anix-preview' to Docker Hub
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Dockerfile"
+      - "node.ts"
+      - "src/**/*.ts"
+      - "src/**/*.json"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Dynamically set 'tag' environment variable
+        run: |
+            echo "IMAGE_DATE=$(date +'%d-%m-%Y')" >> $GITHUB_ENV
+      - name: Build Image
+        run: |
+          docker build . -t radiquum/anix-preview:latest
+          docker tag radiquum/anix-preview:latest radiquum/anix-preview:${{ env.IMAGE_DATE }}
+      - name: Publish Image
+        run: |
+          docker login -u radiquum -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker push radiquum/anix-preview:${{ env.IMAGE_DATE }}
+          docker push radiquum/anix-preview:latest
