@@ -15,6 +15,7 @@ let initialized = false;
 export async function initResvgWasm() {
   try {
     const runtime = getRuntimeKey();
+    // sourcery skip: use-braces
     if (initialized) return;
 
     if (runtime == "node") {
@@ -30,6 +31,7 @@ export async function initResvgWasm() {
     }
 
     console.log("Init Resvg WASM for Edge");
+    //@ts-ignore
     const rvg_wasm_wbg = await import("@resvg/resvg-wasm/index_bg.wasm");
     await initWasm(rvg_wasm_wbg.default);
     initialized = true;
@@ -39,7 +41,7 @@ export async function initResvgWasm() {
   }
 }
 
-export const createOpenGraphImage = async (user: any, blog: any) => {
+export const generateProfileOpenGraphImage = async (user: any, blog: any) => {
   await initResvgWasm();
   let svg: string | undefined;
   svg = await satori(
@@ -52,7 +54,6 @@ export const createOpenGraphImage = async (user: any, blog: any) => {
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#0E131F",
-        borderRadius: 32,
         overflow: "hidden",
       }}
     >
@@ -64,7 +65,6 @@ export const createOpenGraphImage = async (user: any, blog: any) => {
           flexDirection: "column",
           backgroundColor: "#151515",
           color: "#FAFAFA",
-          borderRadius: 32,
           overflow: "hidden",
           padding: 32,
           position: "relative",
@@ -80,8 +80,6 @@ export const createOpenGraphImage = async (user: any, blog: any) => {
               top: 0,
               left: 0,
               right: 0,
-              borderTopLeftRadius: 32,
-              borderTopRightRadius: 32,
               objectFit: "cover",
               filter: "blur(8px)",
             }}
@@ -96,8 +94,6 @@ export const createOpenGraphImage = async (user: any, blog: any) => {
               top: 0,
               left: 0,
               right: 0,
-              borderTopLeftRadius: 32,
-              borderTopRightRadius: 32,
               objectFit: "cover",
               filter: "blur(8px)",
             }}
@@ -112,8 +108,6 @@ export const createOpenGraphImage = async (user: any, blog: any) => {
             left: 0,
             right: 0,
             bottom: 0,
-            borderTopLeftRadius: 32,
-            borderTopRightRadius: 32,
             background: "linear-gradient(to top, #151515, #15151599)",
           }}
         ></div>
@@ -124,7 +118,7 @@ export const createOpenGraphImage = async (user: any, blog: any) => {
             height: 200,
             objectFit: "cover",
             borderRadius: 9999,
-            border: "#151515 2px solid",
+            border: "#151515A0 2px solid",
             borderOpacity: 0.2,
           }}
         ></img>
@@ -137,6 +131,20 @@ export const createOpenGraphImage = async (user: any, blog: any) => {
           {user.login}
         </h1>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+          {user.is_verified && (
+            <p
+              style={{
+                fontSize: 24,
+                leading: 1,
+                border: `#315531 2px solid`,
+                borderRadius: 32,
+                padding: "8px 16px",
+                margin: 0,
+              }}
+            >
+              Проверенный
+            </p>
+          )}
           {user.roles.map((role: any) => {
             return (
               <p

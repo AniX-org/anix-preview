@@ -199,9 +199,10 @@ export const UserCard = ({ user, blog }: { user: any; blog: any }) => {
         class="w-[96px] h-[96px] rounded-full z-10 border-2 border-[var(--card-color)]/10 object-cover"
       />
       <div class="z-10">
-        <h1 class="text-[32px] wrap-anywhere leading-none my-2">
-          {user.login}
-        </h1>
+        <div class="text-[32px] wrap-anywhere leading-none my-2 flex items-center gap-1">
+          <span>{user.login}</span>
+          {user.is_verified && <span><img src="/static/images/ic-verified.svg" style={{ width: 32, height: 32, marginLeft: 8 }}></img></span>}
+        </div>
         <p class="text-[16px] whitespace-pre-wrap">{user.status}</p>
       </div>
       <div class="flex flex-wrap gap-2">

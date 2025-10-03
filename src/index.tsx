@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { App, ButtonGroup, UserCard } from "./components";
 import { ANIXART_HEADERS, getApiBase } from "./config";
 import { tryCatchAPI } from "./tryCatch";
-import { createOpenGraphImage } from "./utils.tsx";
+import { generateProfileOpenGraphImage } from "./utils.tsx";
 
 function renderIndexPage(c: any) {
   return c.render(
@@ -88,7 +88,7 @@ app.get(`/profile/:id/opengraph`, async (c) => {
     return c.text(profileError.message, 500);
   }
 
-  return await createOpenGraphImage(
+  return await generateProfileOpenGraphImage(
     profileData.profile,
     profileBlog ? profileBlog.channel : null
   );
