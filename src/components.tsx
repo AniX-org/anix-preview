@@ -4,9 +4,16 @@ interface AppProps {
   pageTitle?: string;
   pageIcon?: string;
   children: any;
+  openGraph?: {
+    url: string;
+    description: string;
+    image: string;
+    imageWidth: number;
+    imageHeight: number;
+  };
 }
 
-export const App = ({ children, pageTitle, pageIcon }: AppProps) => {
+export const App = ({ children, pageTitle, pageIcon, openGraph }: AppProps) => {
   return (
     <html>
       <head>
@@ -16,6 +23,32 @@ export const App = ({ children, pageTitle, pageIcon }: AppProps) => {
           content="width=device-width, initial-scale=1.0"
         ></meta>
         <title>{pageTitle || "Anixart-Preview"}</title>
+        <meta
+          property="og:title"
+          content={pageTitle || "Anixart-Preview"}
+        ></meta>
+        {openGraph ? (
+          <>
+            <meta property="og:url" content={openGraph.url}></meta>
+            <meta
+              property="og:description"
+              content={openGraph.description}
+            ></meta>
+            <meta property="og:image" content={openGraph.image}></meta>
+            <meta property="og:image:type" content="image/webp"></meta>
+            <meta
+              property="og:image:width"
+              content={`${openGraph.imageWidth}`}
+            ></meta>
+            <meta
+              property="og:image:height"
+              content={`${openGraph.imageHeight}`}
+            ></meta>
+            <meta property="og:image:alt" content=""></meta>
+          </>
+        ) : (
+          ""
+        )}
         {pageIcon ? <link rel="icon" href={pageIcon} /> : ""}
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         <link href="https://unpkg.com/pattern.css" rel="stylesheet"></link>
@@ -163,7 +196,7 @@ export const UserCard = ({ user, blog }: { user: any; blog: any }) => {
       <img
         src={user.avatar}
         alt=""
-        class="w-[96px] h-[96px] object-contain rounded-full z-10 border-2 border-[var(--card-color)]/10 object-cover"
+        class="w-[96px] h-[96px] rounded-full z-10 border-2 border-[var(--card-color)]/10 object-cover"
       />
       <div class="z-10">
         <h1 class="text-[32px] wrap-anywhere leading-none my-2">
