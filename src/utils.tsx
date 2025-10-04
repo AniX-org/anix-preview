@@ -191,10 +191,7 @@ export const generateProfileOpenGraphImage = async (user: any, blog: any) => {
 };
 
 const ageRating = [null, "0+", "6+", "12+", "16+", "18+"];
-export const generateReleaseOpenGraphImage = async (
-  release: any,
-  origin: string
-) => {
+export const generateReleaseOpenGraphImage = async (release: any) => {
   await initResvgWasm();
   let svg: string | undefined;
   svg = await satori(
@@ -286,6 +283,82 @@ export const generateReleaseOpenGraphImage = async (
     {
       width: 512,
       height: 640,
+      fonts: [
+        {
+          name: "Geist",
+          data: await fetchFont(
+            "https://github.com/vercel/geist-font/raw/refs/heads/main/fonts/Geist/ttf/Geist-Regular.ttf"
+          ),
+          weight: 400,
+          style: "normal",
+        },
+      ],
+    }
+  );
+
+  let png;
+  png = new Resvg(svg).render().asPng();
+
+  return new Response(png, {
+    headers: {
+      "Content-Type": "image/png",
+    },
+  });
+};
+
+export const generateCollectionOpenGraphImage = async (collection: any) => {
+  await initResvgWasm();
+  let svg: string | undefined;
+  svg = await satori(
+    <div
+      style={{
+        width: 600,
+        height: 530,
+        FontFace: "Geist",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#0E131F",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          width: 600,
+          height: 530,
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "#151515",
+          color: "#FAFAFA",
+          overflow: "hidden",
+          padding: 32,
+          position: "relative",
+        }}
+      >
+        <img
+          src={collection.image}
+          style={{
+            width: 480,
+            height: 240,
+            objectFit: "cover",
+            borderRadius: 32,
+            border: "#151515A0 2px solid",
+            borderOpacity: 0.2,
+          }}
+        ></img>
+        <h1
+          style={{
+            fontSize: 40,
+            overflowWrap: "anywhere",
+          }}
+        >
+          {collection.title}
+        </h1>
+      </div>
+    </div>,
+    {
+      width: 600,
+      height: 530,
       fonts: [
         {
           name: "Geist",

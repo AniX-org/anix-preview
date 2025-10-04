@@ -9,6 +9,7 @@ import {
 import { ANIXART_HEADERS, getApiBase } from "./config";
 import { tryCatchAPI } from "./tryCatch";
 import {
+  generateCollectionOpenGraphImage,
   generateProfileOpenGraphImage,
   generateReleaseOpenGraphImage,
 } from "./utils.tsx";
@@ -147,8 +148,6 @@ app.get(`/release/:id/opengraph`, async (c) => {
     return c.text("нет ID", 400);
   }
 
-  const host = new URL(c.req.url).origin;
-
   // sourcery skip: combine-object-destructuring
   const { data, error } = await tryCatchAPI<any>(
     fetch(`${getApiBase(c)}/release/${c.req.param("id")}`, {
@@ -161,7 +160,7 @@ app.get(`/release/:id/opengraph`, async (c) => {
     return c.text(error.message, 500);
   }
 
-  return await generateReleaseOpenGraphImage(data.release, host);
+  return await generateReleaseOpenGraphImage(data.release);
 });
 
 app.get(`/collection/:id`, async (c) => {
@@ -193,13 +192,13 @@ app.get(`/collection/:id`, async (c) => {
     <App
       pageTitle={`${collectionData.collection.title} @ Anixart`}
       pageIcon={collectionData.collection.image}
-      // openGraph={{
-      //   url: c.req.url,
-      //   description: data.release.description,
-      //   image: `${c.req.url}/opengraph`,
-      //   imageWidth: 512,
-      //   imageHeight: 640,
-      // }}
+      openGraph={{
+        url: c.req.url,
+        description: collectionData.collection.description,
+        image: `${c.req.url}/opengraph`,
+        imageWidth: 600,
+        imageHeight: 530,
+      }}
     >
       <div class="flex flex-col gap-8">
         <CollectionCard
@@ -210,6 +209,26 @@ app.get(`/collection/:id`, async (c) => {
       </div>
     </App>
   );
+});
+
+app.get(`/collection/:id/opengraph`, async (c) => {
+  if (!c.req.param("id")) {
+    return c.text("нет ID", 400);
+  }
+
+  // sourcery skip: combine-object-destructuring
+  const { data, error } = await tryCatchAPI<any>(
+    fetch(`${getApiBase(c)}/collection/${c.req.param("id")}`, {
+      method: "GET",
+      headers: ANIXART_HEADERS,
+    })
+  );
+
+  if (error) {
+    return c.text(error.message, 500);
+  }
+
+  return await generateCollectionOpenGraphImage(data.collection);
 });
 
 export default app;
