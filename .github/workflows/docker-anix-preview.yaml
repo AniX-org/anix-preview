@@ -5,9 +5,11 @@ on:
     branches:
       - main
     paths:
+      - ".github/workflows/docker-anix-preview.yaml"
       - "Dockerfile"
       - "node.ts"
       - "src/**/*.ts"
+      - "src/**/*.tsx"
       - "src/**/*.json"
   workflow_dispatch:
 
