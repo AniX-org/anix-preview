@@ -257,11 +257,17 @@ export const ReleaseCard = ({ release }: { release: any }) => {
         <div class="text-[16px] wrap-anywhere leading-none my-2 text-[var(--text-color)]/50 -mt-1 flex flex-wrap gap-2 items-center">
           <span>{release.title_original}</span>
           {/* @ts-ignore */}
-          {release.age_rating && ageRating[release.age_rating] && (
-            <span class="bg-white text-black px-1 py-0.5 rounded-[4px] text-xs">
-              {/* @ts-ignore */}
-              {ageRating[release.age_rating]}
-            </span>
+          {release.age_rating ? (
+            ageRating[release.age_rating] ? (
+              <span class="bg-white text-black px-1 py-0.5 rounded-[4px] text-xs">
+                {/* @ts-ignore */}
+                {ageRating[release.age_rating]}
+              </span>
+            ) : (
+              ""
+            )
+          ) : (
+            ""
           )}
         </div>
         <p
@@ -322,7 +328,7 @@ export const ReleaseCard = ({ release }: { release: any }) => {
             {release.episodes_total
               ? release.episodes_total + " эп. "
               : "? эп. "}
-            {release.duration != 0 && `По ${minutesToTime(release.duration)}`}
+            {release.duration != 0 ? `По ${minutesToTime(release.duration)}` : ""}
           </span>
         </div>
         <div class="flex gap-2 items-center leading-none">
@@ -363,13 +369,26 @@ export const ReleaseCard = ({ release }: { release: any }) => {
             )}
           </div>
         </div>
-        {release.genres && (
-          <div class="flex gap-2 items-center flex-wrap leading-none">
+        {release.source && (
+          <div class={"flex gap-2 items-center"}>
             <img
-              src="/static/icons/mingcute_tag-2-line.svg"
+              src="/static/icons/mingcute_camcorder-3-line.svg"
               class="w-[18px] h-[18px]"
             />
-            <span>{release.genres}</span>
+            <span>Источник: {release.source}</span>
+          </div>
+        )}
+        {release.genres && (
+          <div class="flex gap-2 items-center flex-wrap">
+            {release.genres.split(",").map((genre: string) => (
+              <div class="text-balance wrap-anywhere border border-[var(--text-color)]/50 rounded-[16px] px-2 py-1 text-[16px] flex gap-2 items-center">
+                <img
+                  src="/static/icons/mingcute_tag-2-line.svg"
+                  class="w-[18px] h-[18px]"
+                />
+                <span>{genre}</span>
+              </div>
+            ))}
           </div>
         )}
       </div>
