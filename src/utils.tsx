@@ -361,3 +361,32 @@ export function minutesToTime(min: number) {
   if (hours > 0) return hourDisplay;
   if (minutes > 0) return minuteDisplay;
 }
+
+const months = [
+  "янв.",
+  "фев.",
+  "мар.",
+  "апр.",
+  "мая",
+  "июня",
+  "июля",
+  "авг.",
+  "сен.",
+  "окт.",
+  "ноя.",
+  "дек.",
+];
+export function unixToDate(unix: number) {
+  const date = new Date(unix * 1000);
+  return (
+    date.getDate() +
+    " " +
+    months[date.getMonth()] +
+    " " +
+    date.getFullYear() +
+    ", " +
+    `${date.getHours()}`.padStart(2, "0") +
+    ":" +
+    `${date.getMinutes()}`.padStart(2, "0")
+  );
+}

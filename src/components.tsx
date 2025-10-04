@@ -1,5 +1,5 @@
 import conf from "./config.json";
-import { minutesToTime } from "./utils";
+import { minutesToTime, numberDeclension, unixToDate } from "./utils";
 
 interface AppProps {
   pageTitle?: string;
@@ -119,7 +119,7 @@ export const Button = ({ text, image, path, bg, fg }: ButtonProps) => {
 };
 
 interface ButtonGroupProps {
-  type?: "profile" | "release";
+  type?: "profile" | "release" | "collection";
   id?: string;
 }
 
@@ -328,7 +328,9 @@ export const ReleaseCard = ({ release }: { release: any }) => {
             {release.episodes_total
               ? release.episodes_total + " эп. "
               : "? эп. "}
-            {release.duration != 0 ? `По ${minutesToTime(release.duration)}` : ""}
+            {release.duration != 0
+              ? `По ${minutesToTime(release.duration)}`
+              : ""}
           </span>
         </div>
         <div class="flex gap-2 items-center leading-none">
@@ -391,6 +393,85 @@ export const ReleaseCard = ({ release }: { release: any }) => {
             ))}
           </div>
         )}
+      </div>
+    </div>
+  );
+};
+
+export const CollectionCard = ({
+  collection,
+  releases,
+}: {
+  collection: any;
+  releases: any;
+}) => {
+  return (
+    <div class="flex flex-col gap-4 p-8 bg-[var(--card-color)] border border-[var(--text-color)]/10 rounded-[32px] relative overflow-hidden">
+      <img
+        src={collection.image}
+        alt=""
+        class="w-[256px] h-[144px] rounded-[32px] z-10 border-2 border-[var(--card-color)]/10 object-cover"
+      />
+      <div class="flex flex-col gap-2">
+        <h1 class="text-[32px] wrap-anywhere leading-none my-2">
+          {collection.title}
+        </h1>
+        <p
+          class="line-clamp-4 transition-[max-height] max-h-[var(--max-h)]"
+          id="release_desc"
+          style={`--max-h: 100px;`}
+        >
+          {collection.description}
+        </p>
+        <button
+          id="release_expand"
+          class="text-sm px-4 py-2 rounded-[32px] border border-[var(--text-color)]/10 hover:border-[var(--text-color)] transition-[border] whitespace-pre-wrap"
+        >
+          Подробнее...
+        </button>
+        <script src="/static/js/release.js"></script>
+      </div>
+      <div class="flex flex-col gap-2">
+        <div class="flex gap-6 items-center">
+          <div class="flex gap-2 items-center">
+            <img
+              src="/static/icons/mingcute_bookmark-line.svg"
+              class="w-[18px] h-[18px]"
+            />
+            {collection.favorites_count}
+          </div>
+          <div class="flex gap-2 items-center">
+            <img
+              src="/static/icons/mingcute_comment-2-line.svg"
+              class="w-[18px] h-[18px]"
+            />
+            {collection.comment_count}
+          </div>
+        </div>
+        {releases ? (
+          <div class="flex gap-2 items-center">
+            <img
+              src="/static/icons/mingcute_play-circle-line.svg"
+              class="w-[18px] h-[18px]"
+            />
+            {releases.total_count}{" "}
+            {numberDeclension(
+              releases.total_count,
+              "релиз",
+              "релиза",
+              "релизов"
+            )}
+          </div>
+        ) : (
+          ""
+        )}
+        <div class="flex gap-2 items-center">
+          <img
+            src="/static/icons/mingcute_time-line.svg"
+            class="w-[18px] h-[18px]"
+          />
+          {unixToDate(collection.last_update_date)}
+        </div>
       </div>
     </div>
   );

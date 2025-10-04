@@ -1,5 +1,11 @@
 import { Hono } from "hono";
-import { App, ButtonGroup, ReleaseCard, UserCard } from "./components";
+import {
+  App,
+  ButtonGroup,
+  CollectionCard,
+  ReleaseCard,
+  UserCard,
+} from "./components";
 import { ANIXART_HEADERS, getApiBase } from "./config";
 import { tryCatchAPI } from "./tryCatch";
 import {
@@ -116,7 +122,9 @@ app.get(`/release/:id`, async (c) => {
 
   return c.render(
     <App
-      pageTitle={`${data.release.title_ru || data.release.title_original} @ Anixart`}
+      pageTitle={`${
+        data.release.title_ru || data.release.title_original
+      } @ Anixart`}
       pageIcon={data.release.image}
       openGraph={{
         url: c.req.url,
@@ -154,6 +162,54 @@ app.get(`/release/:id/opengraph`, async (c) => {
   }
 
   return await generateReleaseOpenGraphImage(data.release, host);
+});
+
+app.get(`/collection/:id`, async (c) => {
+  if (!c.req.param("id")) {
+    return renderIndexPage(c);
+  }
+
+  // sourcery skip: combine-object-destructuring
+  const { data: collectionData, error: collectionError } =
+    await tryCatchAPI<any>(
+      fetch(`${getApiBase(c)}/collection/${c.req.param("id")}`, {
+        method: "GET",
+        headers: ANIXART_HEADERS,
+      })
+    );
+
+  if (collectionError) {
+    return renderIndexPage(c);
+  }
+
+  const { data: releasesData } = await tryCatchAPI<any>(
+    fetch(`${getApiBase(c)}/collection/${c.req.param("id")}/releases/0`, {
+      method: "GET",
+      headers: ANIXART_HEADERS,
+    })
+  );
+
+  return c.render(
+    <App
+      pageTitle={`${collectionData.collection.title} @ Anixart`}
+      pageIcon={collectionData.collection.image}
+      // openGraph={{
+      //   url: c.req.url,
+      //   description: data.release.description,
+      //   image: `${c.req.url}/opengraph`,
+      //   imageWidth: 512,
+      //   imageHeight: 640,
+      // }}
+    >
+      <div class="flex flex-col gap-8">
+        <CollectionCard
+          collection={collectionData.collection}
+          releases={releasesData}
+        />
+        <ButtonGroup type={`collection`} id={c.req.param("id")}></ButtonGroup>
+      </div>
+    </App>
+  );
 });
 
 export default app;
