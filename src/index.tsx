@@ -7,6 +7,7 @@ import {
   UserCard,
 } from "./components";
 import { ANIXART_HEADERS, getApiBase } from "./config";
+import conf from "./config.json";
 import { tryCatchAPI } from "./tryCatch";
 import {
   generateCollectionOpenGraphImage,
@@ -229,6 +230,10 @@ app.get(`/collection/:id/opengraph`, async (c) => {
   }
 
   return await generateCollectionOpenGraphImage(data.collection);
+});
+
+app.get(`/api/availableServices`, (c) => {
+  return c.json(conf.targets);
 });
 
 export default app;

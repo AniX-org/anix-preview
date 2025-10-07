@@ -88,6 +88,109 @@ export const App = ({ children, pageTitle, pageIcon, openGraph }: AppProps) => {
       >
         <div class="fixed inset-0 pattern-dots-xl text-[var(--text-color)]/5 -z-20"></div>
         {children}
+        <div
+          id="auto-redirect-confirm"
+          class="hidden translate-y-[var(--translate-y)] transition-[translate] duration-200 ease-in-out fixed bottom-8 left-0 right-0 mx-auto bg-[var(--card-color)] text-[var(--text-color)] px-4 py-2 max-w-sm border border-[var(--text-color)]/10 rounded-[16px]"
+          style={{ "--translate-y": "200%" }}
+        >
+          <div class="flex gap-4 items-center justify-between">
+            <img
+              src="/static/icons/mingcute_question-line.svg"
+              class="w-[24px] h-[24px] object-contain"
+            />
+            <p>Включить автопереход?</p>
+            <div class="flex gap-2 items-center">
+              <button
+                class={"px-4 py-2 cursor-pointer"}
+                id="auto-redirect-confirm-no"
+              >
+                Нет
+              </button>
+              <button
+                id="auto-redirect-confirm-yes"
+                class={
+                  "bg-[var(--text-color)] text-[var(--card-color)] px-4 py-2 rounded-[16px] cursor-pointer"
+                }
+              >
+                Да
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="hidden inset-0 z-50 fixed bg-black/50"
+          id="auto-redirect-service-select"
+        >
+          <div
+            class={
+              "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 p-8 mx-auto bg-[var(--card-color)] text-[var(--text-color)] max-w-sm border border-[var(--text-color)]/10 rounded-[16px]"
+            }
+          >
+            <div class={"flex flex-col gap-4"}>
+              <p
+                class={
+                  "font-bold text-[22px] pb-2 mb-2 border-b border-[var(--text-color)]/25"
+                }
+              >
+                Сервис для автоперехода
+              </p>
+              {conf.targets.map((target, index) => {
+                return (
+                  <button
+                    class={"cursor-pointer flex gap-2 items-center text-[20px]"}
+                    data-autoredirect-service-item={index}
+                  >
+                    {target.icon ? (
+                      <img
+                        src={target.icon}
+                        alt=""
+                        class="w-[24px] h-[24px] object-contain"
+                      />
+                    ) : (
+                      ""
+                    )}
+                    {target.name}
+                  </button>
+                );
+              })}
+              <div class={"flex gap-2 items-center justify-end"}>
+                <button
+                  id="auto-redirect-service-select-cancel"
+                  class={
+                    "bg-[var(--text-color)] text-[var(--card-color)] px-4 py-2 rounded-[16px] cursor-pointer"
+                  }
+                >
+                  Отменить
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="auto-redirect-timeout"
+          class="hidden translate-y-[var(--translate-y)] transition-[translate] duration-200 ease-in-out fixed bottom-8 left-0 right-0 mx-auto bg-[var(--card-color)] text-[var(--text-color)] px-4 py-2 max-w-sm border border-[var(--text-color)]/10 rounded-[16px]"
+          style={{ "--translate-y": "200%" }}
+        >
+          <div class="flex gap-4 items-center justify-between">
+            <p id="auto-redirect-timeout-countdown-text">
+              Переход через <span id="auto-redirect-timeout-countdown">00</span>{" "}
+              секунд
+            </p>
+            <div class="flex gap-2 items-center">
+              <button
+                id="auto-redirect-timeout-cancel"
+                class={
+                  "bg-[var(--text-color)] text-[var(--card-color)] px-4 py-2 rounded-[16px] cursor-pointer"
+                }
+              >
+                Отменить
+              </button>
+            </div>
+          </div>
+        </div>
+        <script src="/static/js/autoredirect.js"></script>
       </body>
     </html>
   );
