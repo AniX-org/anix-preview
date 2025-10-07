@@ -130,7 +130,7 @@ export const App = ({ children, pageTitle, pageIcon, openGraph }: AppProps) => {
             <div class={"flex flex-col gap-4"}>
               <p
                 class={
-                  "font-bold text-[22px] pb-2 mb-2 border-b border-[var(--text-color)]/25"
+                  "font-bold text-[22px] pb-2 border-b border-[var(--text-color)]/25"
                 }
               >
                 Сервис для автоперехода
@@ -138,7 +138,9 @@ export const App = ({ children, pageTitle, pageIcon, openGraph }: AppProps) => {
               {conf.targets.map((target, index) => {
                 return (
                   <button
-                    class={"cursor-pointer flex gap-2 items-center text-[20px]"}
+                    class={
+                      "cursor-pointer flex gap-2 items-center text-[20px] py-2 px-4 border border-[var(--text-color)]/25 hover:border-[var(--text-color)] transition-[border] rounded-[16px]"
+                    }
                     data-autoredirect-service-item={index}
                   >
                     {target.icon ? (
